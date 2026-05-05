@@ -1,5 +1,11 @@
 import SectionHeader from "@/components/ui/SectionHeader";
-import { testimonials } from "@/lib/data/testimonials";
+import type { Testimonial } from "@/lib/types";
+import type { Dictionary } from "@/lib/i18n";
+
+type Props = {
+  testimonials: Testimonial[];
+  labels: Dictionary["testimonials"];
+};
 
 function StarRating({ rating }: { rating: number }) {
   return (
@@ -13,14 +19,14 @@ function StarRating({ rating }: { rating: number }) {
   );
 }
 
-export default function Testimonials() {
+export default function Testimonials({ testimonials, labels }: Props) {
   return (
     <section className="py-24 bg-brand-dark">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader
-          eyebrow="Client Stories"
-          title="What Clients Say"
-          subtitle="Real feedback from property owners and developers who chose independent consulting."
+          eyebrow={labels.eyebrow}
+          title={labels.title}
+          subtitle={labels.subtitle}
           centered
           light
         />
@@ -31,23 +37,16 @@ export default function Testimonials() {
               key={testimonial.id}
               className="relative bg-white/5 border border-white/10 rounded-sm p-8 hover:bg-white/8 hover:border-brand-yellow/30 transition-all duration-300"
             >
-              {/* Quote mark */}
               <div
                 className="text-5xl font-serif leading-none mb-4 opacity-40"
                 style={{ color: "#C8941A" }}
               >
                 "
               </div>
-
-              {/* Content */}
               <p className="text-gray-300 text-sm leading-relaxed mb-6 italic">
                 {testimonial.content}
               </p>
-
-              {/* Rating */}
               <StarRating rating={testimonial.rating} />
-
-              {/* Author */}
               <div className="mt-4 pt-4 border-t border-white/10">
                 <div className="font-semibold text-white text-sm">{testimonial.name}</div>
                 <div className="text-xs text-gray-400 mt-0.5">

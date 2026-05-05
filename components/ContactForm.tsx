@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import SectionHeader from "@/components/ui/SectionHeader";
 import Button from "@/components/ui/Button";
+import type { Dictionary } from "@/lib/i18n";
 
 interface FormState {
   name: string;
@@ -13,26 +13,6 @@ interface FormState {
   message: string;
 }
 
-const projectTypes = [
-  "New Residential Construction",
-  "Residential Renovation",
-  "Commercial Construction",
-  "Commercial Renovation",
-  "Industrial / Warehouse",
-  "Mixed-Use Development",
-  "Feasibility Study",
-  "Other",
-];
-
-const budgetRanges = [
-  "Under $100K",
-  "$100K – $500K",
-  "$500K – $1M",
-  "$1M – $5M",
-  "$5M+",
-  "Not sure yet",
-];
-
 const initialState: FormState = {
   name: "",
   email: "",
@@ -42,7 +22,12 @@ const initialState: FormState = {
   message: "",
 };
 
-export default function ContactForm() {
+type Props = {
+  dict: Dictionary["contactPage"];
+};
+
+export default function ContactForm({ dict }: Props) {
+  const f = dict.form;
   const [form, setForm] = useState<FormState>(initialState);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -56,7 +41,6 @@ export default function ContactForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Simulate network request — replace with actual form endpoint (Formspree, Resend, etc.)
     await new Promise((r) => setTimeout(r, 1200));
     setLoading(false);
     setSubmitted(true);
@@ -73,15 +57,15 @@ export default function ContactForm() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h3 className="text-xl font-bold text-brand-dark mb-3">Message Received!</h3>
+        <h3 className="text-xl font-bold text-brand-dark mb-3">{f.successTitle}</h3>
         <p className="text-brand-gray text-sm leading-relaxed max-w-sm mx-auto mb-6">
-          Thank you, {form.name.split(" ")[0]}. I'll review your project details and get back to you within one business day.
+          {f.successBodyPrefix}{form.name.split(" ")[0]}{f.successBodySuffix}
         </p>
         <button
           onClick={() => { setForm(initialState); setSubmitted(false); }}
           className="text-xs text-brand-yellow hover:text-brand-orange transition-colors"
         >
-          Send another message
+          {f.sendAnother}
         </button>
       </div>
     );
@@ -93,7 +77,7 @@ export default function ContactForm() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label htmlFor="name" className="block text-xs font-semibold text-brand-dark mb-1.5">
-            Full Name <span className="text-brand-orange">*</span>
+            {f.nameLabel} <span className="text-brand-orange">*</span>
           </label>
           <input
             id="name"
@@ -102,13 +86,13 @@ export default function ContactForm() {
             required
             value={form.name}
             onChange={handleChange}
-            placeholder="Sarah Mitchell"
+            placeholder={f.namePlaceholder}
             className="w-full px-4 py-3 border border-gray-200 rounded-sm text-sm text-brand-dark placeholder:text-gray-400 focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow transition-colors"
           />
         </div>
         <div>
           <label htmlFor="email" className="block text-xs font-semibold text-brand-dark mb-1.5">
-            Email Address <span className="text-brand-orange">*</span>
+            {f.emailLabel} <span className="text-brand-orange">*</span>
           </label>
           <input
             id="email"
@@ -117,7 +101,7 @@ export default function ContactForm() {
             required
             value={form.email}
             onChange={handleChange}
-            placeholder="sarah@example.com"
+            placeholder={f.emailPlaceholder}
             className="w-full px-4 py-3 border border-gray-200 rounded-sm text-sm text-brand-dark placeholder:text-gray-400 focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow transition-colors"
           />
         </div>
@@ -126,7 +110,7 @@ export default function ContactForm() {
       {/* Phone */}
       <div>
         <label htmlFor="phone" className="block text-xs font-semibold text-brand-dark mb-1.5">
-          Phone Number <span className="text-gray-400 font-normal">(optional)</span>
+          {f.phoneLabel} <span className="text-gray-400 font-normal">{f.phoneOptional}</span>
         </label>
         <input
           id="phone"
@@ -134,7 +118,7 @@ export default function ContactForm() {
           type="tel"
           value={form.phone}
           onChange={handleChange}
-          placeholder="(303) 555-0000"
+          placeholder={f.phonePlaceholder}
           className="w-full px-4 py-3 border border-gray-200 rounded-sm text-sm text-brand-dark placeholder:text-gray-400 focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow transition-colors"
         />
       </div>
@@ -143,7 +127,7 @@ export default function ContactForm() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label htmlFor="projectType" className="block text-xs font-semibold text-brand-dark mb-1.5">
-            Project Type <span className="text-brand-orange">*</span>
+            {f.projectTypeLabel} <span className="text-brand-orange">*</span>
           </label>
           <select
             id="projectType"
@@ -153,15 +137,15 @@ export default function ContactForm() {
             onChange={handleChange}
             className="w-full px-4 py-3 border border-gray-200 rounded-sm text-sm text-brand-dark focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow transition-colors bg-white"
           >
-            <option value="">Select type...</option>
-            {projectTypes.map((t) => (
+            <option value="">{f.projectTypePlaceholder}</option>
+            {f.projectTypes.map((t) => (
               <option key={t} value={t}>{t}</option>
             ))}
           </select>
         </div>
         <div>
           <label htmlFor="budget" className="block text-xs font-semibold text-brand-dark mb-1.5">
-            Approximate Budget
+            {f.budgetLabel}
           </label>
           <select
             id="budget"
@@ -170,8 +154,8 @@ export default function ContactForm() {
             onChange={handleChange}
             className="w-full px-4 py-3 border border-gray-200 rounded-sm text-sm text-brand-dark focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow transition-colors bg-white"
           >
-            <option value="">Select range...</option>
-            {budgetRanges.map((r) => (
+            <option value="">{f.budgetPlaceholder}</option>
+            {f.budgetRanges.map((r) => (
               <option key={r} value={r}>{r}</option>
             ))}
           </select>
@@ -181,7 +165,7 @@ export default function ContactForm() {
       {/* Message */}
       <div>
         <label htmlFor="message" className="block text-xs font-semibold text-brand-dark mb-1.5">
-          Tell Me About Your Project <span className="text-brand-orange">*</span>
+          {f.messageLabel} <span className="text-brand-orange">*</span>
         </label>
         <textarea
           id="message"
@@ -190,7 +174,7 @@ export default function ContactForm() {
           rows={5}
           value={form.message}
           onChange={handleChange}
-          placeholder="Describe your project — location, timeline, what challenges you're facing, or which services you're most interested in..."
+          placeholder={f.messagePlaceholder}
           className="w-full px-4 py-3 border border-gray-200 rounded-sm text-sm text-brand-dark placeholder:text-gray-400 focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow transition-colors resize-none"
         />
       </div>
@@ -202,11 +186,11 @@ export default function ContactForm() {
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
             </svg>
-            Sending...
+            {f.submitting}
           </>
         ) : (
           <>
-            Send Message
+            {f.submitButton}
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
@@ -215,8 +199,8 @@ export default function ContactForm() {
       </Button>
 
       <p className="text-xs text-brand-gray text-center">
-        Your information is kept strictly confidential. I respond within one business day.
+        {f.privacyNote}
       </p>
     </form>
   );
-}
+}

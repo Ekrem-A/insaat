@@ -1,16 +1,22 @@
 "use client";
 
-export default function WhatsAppButton() {
+import type { Locale } from "@/lib/i18n/config";
+
+const whatsappHrefs: Record<Locale, string> = {
+  en: "https://wa.me/13035550147?text=Hi%20James%2C%20I%27d%20like%20to%20schedule%20a%20free%20consultation.",
+  tr: "https://wa.me/13035550147?text=Merhaba%20James%2C%20%C3%BCcretsiz%20dan%C4%B1%C5%9Fmanl%C4%B1k%20g%C3%B6r%C3%BC%C5%9Fmesi%20planlamak%20istiyorum.",
+};
+
+export default function WhatsAppButton({ locale }: { locale: Locale }) {
   return (
     <a
-      href="https://wa.me/13035550147?text=Hi%20James%2C%20I%27d%20like%20to%20schedule%20a%20free%20consultation."
+      href={whatsappHrefs[locale]}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat on WhatsApp"
       className="fixed bottom-6 right-6 z-50 group"
     >
       <div className="flex items-center gap-2 bg-[#25D366] text-white px-4 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95">
-        {/* WhatsApp icon */}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"

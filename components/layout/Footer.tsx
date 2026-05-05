@@ -1,21 +1,29 @@
 import Link from "next/link";
+import type { Locale } from "@/lib/i18n/config";
+import type { Dictionary } from "@/lib/i18n";
 
-const services = [
-  { label: "Project Consulting", href: "/services#project-consulting" },
-  { label: "Cost Analysis", href: "/services#cost-analysis" },
-  { label: "Technical Supervision", href: "/services#technical-supervision" },
-  { label: "Risk Assessment", href: "/services#risk-assessment" },
-  { label: "Contractor Evaluation", href: "/services#contractor-evaluation" },
-];
+type FooterProps = {
+  locale: Locale;
+  footer: Dictionary["footer"];
+  nav: Dictionary["nav"];
+};
 
-const quickLinks = [
-  { label: "About", href: "/about" },
-  { label: "Projects", href: "/projects" },
-  { label: "Blog", href: "/blog" },
-  { label: "Contact", href: "/contact" },
-];
+export default function Footer({ locale, footer, nav }: FooterProps) {
+  const serviceIds = [
+    "project-consulting",
+    "cost-analysis",
+    "technical-supervision",
+    "risk-assessment",
+    "contractor-evaluation",
+  ];
 
-export default function Footer() {
+  const quickLinks = [
+    { label: nav.about, href: `/${locale}/about` },
+    { label: nav.projects, href: `/${locale}/projects` },
+    { label: nav.blog, href: `/${locale}/blog` },
+    { label: nav.contact, href: `/${locale}/contact` },
+  ];
+
   return (
     <footer className="bg-brand-dark text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -36,13 +44,12 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed max-w-sm mb-6">
-              Independent construction consulting for property owners, investors, and developers.
-              15+ years of experience ensuring projects are built on time, on budget, and to standard.
+              {footer.description}
             </p>
             <div className="space-y-2 text-sm text-gray-400">
               <div className="flex items-center gap-2">
                 <span>📍</span>
-                <span>Denver, CO — serving clients nationwide</span>
+                <span>{footer.location}</span>
               </div>
               <div className="flex items-center gap-2">
                 <span>📞</span>
@@ -62,16 +69,16 @@ export default function Footer() {
           {/* Services */}
           <div>
             <h3 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">
-              Services
+              {footer.servicesTitle}
             </h3>
             <ul className="space-y-2">
-              {services.map((s) => (
-                <li key={s.href}>
+              {serviceIds.map((id) => (
+                <li key={id}>
                   <Link
-                    href={s.href}
+                    href={`/${locale}/services#${id}`}
                     className="text-sm text-gray-400 hover:text-brand-yellow transition-colors duration-200"
                   >
-                    {s.label}
+                    {id.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")}
                   </Link>
                 </li>
               ))}
@@ -81,7 +88,7 @@ export default function Footer() {
           {/* Quick links */}
           <div>
             <h3 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">
-              Company
+              {footer.companyTitle}
             </h3>
             <ul className="space-y-2">
               {quickLinks.map((l) => (
@@ -97,11 +104,11 @@ export default function Footer() {
             </ul>
             <div className="mt-6">
               <Link
-                href="/contact"
+                href={`/${locale}/contact`}
                 className="inline-block px-5 py-2.5 rounded-sm text-sm font-semibold text-white transition-all duration-200 hover:opacity-90"
                 style={{ background: "linear-gradient(135deg, #C8941A, #E8791A)" }}
               >
-                Free Consultation
+                {nav.cta}
               </Link>
             </div>
           </div>
@@ -109,8 +116,8 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="border-t border-white/10 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
-          <p>© {new Date().getFullYear()} James Harrington Construction Consulting. All rights reserved.</p>
-          <p>Licensed Professional Engineer · Colorado PE License #45821</p>
+          <p>© {new Date().getFullYear()} {footer.copyright}</p>
+          <p>{footer.license}</p>
         </div>
       </div>
     </footer>

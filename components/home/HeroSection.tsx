@@ -1,6 +1,13 @@
 import Button from "@/components/ui/Button";
+import type { Dictionary } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n/config";
 
-export default function HeroSection() {
+type HeroProps = {
+  hero: Dictionary["hero"];
+  locale: Locale;
+};
+
+export default function HeroSection({ hero, locale }: HeroProps) {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* Background */}
@@ -41,13 +48,13 @@ export default function HeroSection() {
               style={{ background: "linear-gradient(90deg, #C8941A, #E8791A)" }}
             />
             <span className="text-xs font-semibold uppercase tracking-widest text-brand-yellow">
-              Licensed Professional Engineer
+              {hero.eyebrow}
             </span>
           </div>
 
           {/* Headline */}
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight tracking-tight mb-6 animate-fade-in animate-delay-100">
-            Professional Construction Consulting{" "}
+            {hero.headline}{" "}
             <span
               className="inline-block"
               style={{
@@ -57,22 +64,19 @@ export default function HeroSection() {
                 backgroundClip: "text",
               }}
             >
-              You Can Trust
+              {hero.headlineAccent}
             </span>
           </h1>
 
           {/* Subheadline */}
           <p className="text-lg sm:text-xl text-gray-300 leading-relaxed mb-10 max-w-2xl animate-fade-in animate-delay-200">
-            I help property owners and investors build with confidence — catching
-            problems before they become expensive, choosing the right
-            contractors, and keeping projects on track from the first consultation
-            to final handover.
+            {hero.subheadline}
           </p>
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-4 animate-fade-in animate-delay-300">
-            <Button href="/contact" size="lg">
-              Get Free Consultation
+            <Button href={`/${locale}/contact`} size="lg">
+              {hero.ctaPrimary}
               <svg
                 className="w-4 h-4"
                 fill="none"
@@ -87,19 +91,14 @@ export default function HeroSection() {
                 />
               </svg>
             </Button>
-            <Button href="/projects" variant="outline" size="lg">
-              View Projects
+            <Button href={`/${locale}/projects`} variant="outline" size="lg">
+              {hero.ctaSecondary}
             </Button>
           </div>
 
           {/* Trust badges */}
           <div className="mt-14 flex flex-wrap gap-6 animate-fade-in animate-delay-400">
-            {[
-              { value: "15+", label: "Years Experience" },
-              { value: "200+", label: "Projects Completed" },
-              { value: "$120M+", label: "Projects Managed" },
-              { value: "98%", label: "Client Satisfaction" },
-            ].map((stat) => (
+            {hero.stats.map((stat) => (
               <div key={stat.label} className="flex items-center gap-3">
                 <div
                   className="w-px h-8 opacity-30"

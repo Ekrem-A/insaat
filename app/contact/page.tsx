@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ContactForm from "@/components/ContactForm";
+import { getDictionary } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -38,7 +39,8 @@ const contactInfo = [
   },
 ];
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const dict = await getDictionary('en');
   return (
     <div className="pt-20">
       {/* Header */}
@@ -76,7 +78,7 @@ export default function ContactPage() {
                 </p>
               </div>
               <div className="p-8">
-                <ContactForm />
+                <ContactForm dict={dict.contactPage} />
               </div>
             </div>
 

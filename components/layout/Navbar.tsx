@@ -2,25 +2,37 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import type { Locale } from "@/lib/i18n/config";
+import type { Dictionary } from "@/lib/i18n";
 
-const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/services", label: "Services" },
-  { href: "/projects", label: "Projects" },
-  { href: "/blog", label: "Blog" },
-  { href: "/contact", label: "Contact" },
-];
+type NavProps = {
+  locale: Locale;
+  nav: Dictionary["nav"];
+};
 
-export default function Navbar() {
+export default function Navbar({ locale, nav }: NavProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const navLinks = [
+    { href: `/${locale}`, label: nav.home },
+    { href: `/${locale}/about`, label: nav.about },
+    { href: `/${locale}/services`, label: nav.services },
+    { href: `/${locale}/projects`, label: nav.projects },
+    { href: `/${locale}/blog`, label: nav.blog },
+    { href: `/${locale}/contact`, label: nav.contact },
+  ];
+
+  const otherLocale: Locale = locale === "en" ? "tr" : "en";
+  const otherPath = pathname.replace(`/${locale}`, `/${otherLocale}`);
 
   return (
     <header
@@ -58,14 +70,22 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* CTA + Hamburger */}
+          {/* CTA + Lang switcher + Hamburger */}
           <div className="flex items-center gap-3">
+            {/* Language switcher */}
             <Link
-              href="/contact"
+              href={otherPath}
+              className="hidden lg:inline-flex items-center px-3 py-1.5 rounded-sm text-xs font-semibold border border-brand-yellow/40 text-brand-yellow hover:bg-brand-yellow hover:text-white transition-all duration-200"
+            >
+              {otherLocale.toUpperCase()}
+            </Link>
+
+            <Link
+              href={`/${locale}/contact`}
               className="hidden lg:inline-flex items-center px-5 py-2.5 rounded-sm text-sm font-semibold text-white transition-all duration-200 hover:scale-105 active:scale-95"
               style={{ background: "linear-gradient(135deg, #C8941A, #E8791A)" }}
             >
-              Free Consultation
+              {nav.cta}
             </Link>
 
             {/* Mobile hamburger */}
@@ -111,14 +131,21 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
-          <div className="pt-2">
+          <div className="pt-2 flex gap-2">
             <Link
-              href="/contact"
+              href={`/${locale}/contact`}
               onClick={() => setIsOpen(false)}
-              className="block w-full text-center px-5 py-3 rounded-sm text-sm font-semibold text-white"
+              className="flex-1 text-center px-5 py-3 rounded-sm text-sm font-semibold text-white"
               style={{ background: "linear-gradient(135deg, #C8941A, #E8791A)" }}
             >
-              Free Consultation
+              {nav.cta}
+            </Link>
+            <Link
+              href={otherPath}
+              onClick={() => setIsOpen(false)}
+              className="px-4 py-3 rounded-sm text-sm font-semibold border border-brand-yellow/40 text-brand-yellow hover:bg-brand-yellow hover:text-white transition-all duration-200"
+            >
+              {otherLocale.toUpperCase()}
             </Link>
           </div>
         </div>
